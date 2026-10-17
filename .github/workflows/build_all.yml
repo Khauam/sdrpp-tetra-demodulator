@@ -69,6 +69,18 @@ jobs:
           working-directory: sdrpp_lib/sdrpp_windows_x64
           run: C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -c "gendef sdrpp_core.dll || true; ls -la sdrpp_core.def"
         - name: Generate .lib file
+        - name: Setup MSVC environment
+          uses: ilammy/msvc-dev-cmd@v1
+        - name: Generate sdrpp_core.lib with MSVC tools
+          working-directory: sdrpp_lib/sdrpp_windows_x64
+          shell: pwsh
+          run: |
+            $lines = dumpbin /exports sdrpp_core.dll
+            $names = foreach ($l in $lines) { if ($l -match '^\s+\d+\s+[0-9A-F]+\s+[0-9A-F]{8}\s+(\S+)') { $matches[1] } }
+            Write-Host "Exports found: $($names.Count)"
+            "EXPORTS" | Out-File sdrpp_core.def -Encoding ascii
+            $names | Out-File sdrpp_core.def -Append -Encoding ascii
+            lib /nologo /def:sdrpp_core.def /out:sdrpp_core.lib /machine:x64
           working-directory: sdrpp_lib/sdrpp_windows_x64
           # run: |
           #   $path = "C:/Program Files/Microsoft Visual Studio"
