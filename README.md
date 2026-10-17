@@ -3,7 +3,7 @@ Tetra demodulator plugin for SDR++
 
 Designed to fully demodulate and decode TETRA downlink signals
 
-Thanks to osmo-tetra authors for their great library
+Thanks to osmo-tetra authors for their great library.
 
 Signal chain:
 
